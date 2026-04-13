@@ -1,0 +1,48 @@
+import React from 'react';
+import { Shell } from './components/layout/Shell';
+import { HomeView } from './components/views/HomeView';
+import { FlowDesigner } from './components/views/FlowDesigner';
+import { TaskCenter } from './components/views/TaskCenter';
+import { EmployeeList } from './components/views/EmployeeList';
+import { IntegrationHub } from './components/views/IntegrationHub';
+import { AdminConsole } from './components/views/AdminConsole';
+import { WorkflowProvider, useWorkflow } from './context/WorkflowContext';
+
+const AppContent: React.FC = () => {
+  const { activeView } = useWorkflow();
+
+  const renderView = () => {
+    switch (activeView) {
+      case 'home':
+        return <HomeView />;
+      case 'visualizer':
+        return <FlowDesigner />;
+      case 'tasks':
+        return <TaskCenter />;
+      case 'employees':
+        return <EmployeeList />;
+      case 'integrations':
+        return <IntegrationHub />;
+      case 'admin':
+        return <AdminConsole />;
+      default:
+        return <HomeView />;
+    }
+  };
+
+  return (
+    <Shell>
+      {renderView()}
+    </Shell>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <WorkflowProvider>
+      <AppContent />
+    </WorkflowProvider>
+  );
+};
+
+export default App;

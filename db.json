@@ -1,0 +1,334 @@
+{
+  "employees": [
+    {
+      "id": "EMP_001",
+      "name": "Sarah Chen",
+      "role": "Senior Software Engineer",
+      "status": "active",
+      "department": "Engineering",
+      "stage": "active",
+      "tasks": [
+        {
+          "id": "T1",
+          "title": "Asset Provisioning",
+          "status": "completed",
+          "department": "IT",
+          "assignee": "IT Support"
+        }
+      ]
+    },
+    {
+      "name": "dhinesh kumar ",
+      "role": "full stack developer",
+      "department": "Engineering",
+      "status": "hired",
+      "stage": "onboarding",
+      "tasks": [
+        {
+          "id": "T_IT_1776051314189",
+          "title": "Laptop Provisioning",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "IT Fleet"
+        },
+        {
+          "id": "T_IT2_1776051314189",
+          "title": "Email Account Setup",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "SysAdmin"
+        },
+        {
+          "id": "T_SEC_1776051314189",
+          "title": "Access Badge Creation",
+          "department": "Security",
+          "status": "pending",
+          "assignee": "Security Desk"
+        },
+        {
+          "id": "T_FAC_1776051314189",
+          "title": "Desk Allocation",
+          "department": "Facilities",
+          "status": "pending",
+          "assignee": "Ops Team"
+        }
+      ],
+      "id": "v5jMBs6sztg"
+    },
+    {
+      "name": "Simulation User",
+      "role": "Automated Agent",
+      "department": "System",
+      "status": "hired",
+      "stage": "onboarding",
+      "tasks": [
+        {
+          "id": "T_IT_1776051340181",
+          "title": "Laptop Provisioning",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "IT Fleet"
+        },
+        {
+          "id": "T_IT2_1776051340181",
+          "title": "Email Account Setup",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "SysAdmin"
+        },
+        {
+          "id": "T_SEC_1776051340181",
+          "title": "Access Badge Creation",
+          "department": "Security",
+          "status": "pending",
+          "assignee": "Security Desk"
+        },
+        {
+          "id": "T_FAC_1776051340181",
+          "title": "Desk Allocation",
+          "department": "Facilities",
+          "status": "pending",
+          "assignee": "Ops Team"
+        }
+      ],
+      "id": "5wUBw0qdMS4"
+    },
+    {
+      "name": "Simulation User",
+      "role": "Automated Agent",
+      "department": "System",
+      "status": "hired",
+      "stage": "onboarding",
+      "tasks": [
+        {
+          "id": "T_IT_1776051341363",
+          "title": "Laptop Provisioning",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "IT Fleet"
+        },
+        {
+          "id": "T_IT2_1776051341363",
+          "title": "Email Account Setup",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "SysAdmin"
+        },
+        {
+          "id": "T_SEC_1776051341363",
+          "title": "Access Badge Creation",
+          "department": "Security",
+          "status": "pending",
+          "assignee": "Security Desk"
+        },
+        {
+          "id": "T_FAC_1776051341363",
+          "title": "Desk Allocation",
+          "department": "Facilities",
+          "status": "pending",
+          "assignee": "Ops Team"
+        }
+      ],
+      "id": "2MxYP9BRq3E"
+    },
+    {
+      "name": "Simulation User",
+      "role": "Automated Agent",
+      "department": "System",
+      "status": "hired",
+      "stage": "onboarding",
+      "tasks": [
+        {
+          "id": "T_IT_1776051342202",
+          "title": "Laptop Provisioning",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "IT Fleet"
+        },
+        {
+          "id": "T_IT2_1776051342202",
+          "title": "Email Account Setup",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "SysAdmin"
+        },
+        {
+          "id": "T_SEC_1776051342202",
+          "title": "Access Badge Creation",
+          "department": "Security",
+          "status": "pending",
+          "assignee": "Security Desk"
+        },
+        {
+          "id": "T_FAC_1776051342202",
+          "title": "Desk Allocation",
+          "department": "Facilities",
+          "status": "pending",
+          "assignee": "Ops Team"
+        }
+      ],
+      "id": "7H0mspY59fU"
+    },
+    {
+      "name": "Simulation User",
+      "role": "Automated Agent",
+      "department": "System",
+      "status": "hired",
+      "stage": "onboarding",
+      "tasks": [
+        {
+          "id": "T_IT_1776051342368",
+          "title": "Laptop Provisioning",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "IT Fleet"
+        },
+        {
+          "id": "T_IT2_1776051342368",
+          "title": "Email Account Setup",
+          "department": "IT",
+          "status": "pending",
+          "assignee": "SysAdmin"
+        },
+        {
+          "id": "T_SEC_1776051342368",
+          "title": "Access Badge Creation",
+          "department": "Security",
+          "status": "pending",
+          "assignee": "Security Desk"
+        },
+        {
+          "id": "T_FAC_1776051342368",
+          "title": "Desk Allocation",
+          "department": "Facilities",
+          "status": "pending",
+          "assignee": "Ops Team"
+        }
+      ],
+      "id": "aVY6zu2Ha1I"
+    }
+  ],
+  "logs": [
+    {
+      "id": "L1",
+      "timestamp": "10:35:30 PM",
+      "message": "System database synchronized with Enterprise Backbone.",
+      "type": "success"
+    },
+    {
+      "id": "RDGU8CBm8KM",
+      "timestamp": "09:05:39",
+      "message": "Manual Simulation Triggered",
+      "type": "warning"
+    },
+    {
+      "id": "sthgDmfmCaA",
+      "timestamp": "09:05:40",
+      "message": "New Hire Detected: Simulation User (Automated Agent)",
+      "type": "info"
+    },
+    {
+      "id": "DMUHbSxYO7k",
+      "timestamp": "09:05:40",
+      "message": "Workflow Triggered: Onboarding flow for 5wUBw0qdMS4",
+      "type": "success"
+    },
+    {
+      "id": "EVHRj19Nz5I",
+      "timestamp": "09:05:40",
+      "message": "Manual Simulation Triggered",
+      "type": "warning"
+    },
+    {
+      "id": "HhjTGSXqlTw",
+      "timestamp": "09:05:41",
+      "message": "New Hire Detected: Simulation User (Automated Agent)",
+      "type": "info"
+    },
+    {
+      "id": "hRrAUrw4DX4",
+      "timestamp": "09:05:41",
+      "message": "Workflow Triggered: Onboarding flow for 2MxYP9BRq3E",
+      "type": "success"
+    },
+    {
+      "id": "djqplBpbNaU",
+      "timestamp": "09:05:41",
+      "message": "Manual Simulation Triggered",
+      "type": "warning"
+    },
+    {
+      "id": "YTMdGaLWhH4",
+      "timestamp": "09:05:43",
+      "message": "Active Directory: Provisions started for Simulation User",
+      "type": "info"
+    },
+    {
+      "id": "wTOGdR6rlqY",
+      "timestamp": "09:05:43",
+      "message": "Active Directory: Provisions started for Simulation User",
+      "type": "info"
+    },
+    {
+      "id": "HBv16aI0QMY",
+      "timestamp": "09:05:43",
+      "message": "New Hire Detected: Simulation User (Automated Agent)",
+      "type": "info"
+    },
+    {
+      "id": "wo4J9zWWiE0",
+      "timestamp": "09:05:44",
+      "message": "New Hire Detected: Simulation User (Automated Agent)",
+      "type": "info"
+    },
+    {
+      "id": "5JvNvdCLqok",
+      "timestamp": "09:05:44",
+      "message": "Workflow Triggered: Onboarding flow for 8Ws4o7HI6YA",
+      "type": "success"
+    },
+    {
+      "id": "oNW6Y-Zy0Rw",
+      "timestamp": "09:05:44",
+      "message": "Slack: Notification sent to #general",
+      "type": "success"
+    },
+    {
+      "id": "5LGFrhu12Sc",
+      "timestamp": "09:05:45",
+      "message": "Slack: Notification sent to #general",
+      "type": "success"
+    },
+    {
+      "id": "d7BG66lPybU",
+      "timestamp": "09:05:45",
+      "message": "Slack: Notification sent to #general",
+      "type": "success"
+    },
+    {
+      "id": "lyUpGvbdd2I",
+      "timestamp": "09:06:14",
+      "message": "Manual sync triggered for Workday HRIS",
+      "type": "info"
+    },
+    {
+      "id": "Q1gBU_eI0xw",
+      "timestamp": "09:06:15",
+      "message": "Completed sync for Workday HRIS",
+      "type": "success"
+    },
+    {
+      "id": "T7fdB-JSn4A",
+      "timestamp": "09:06:20",
+      "message": "Manual sync triggered for Active Directory",
+      "type": "info"
+    },
+    {
+      "id": "NQpMRwhQTQE",
+      "timestamp": "09:06:22",
+      "message": "Completed sync for Active Directory",
+      "type": "success"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

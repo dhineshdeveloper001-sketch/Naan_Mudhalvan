@@ -55,7 +55,7 @@ interface WorkflowContextType {
 
 // ─── API base URL ─────────────────────────────────────────────────────────────
 const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '';
-const IS_API_MODE = Boolean(API_BASE);
+const IS_API_MODE = Boolean(API_BASE) || import.meta.env.PROD;
 
 // ─── Seed Data (localStorage fallback) ───────────────────────────────────────
 const SEED_EMPLOYEES: Employee[] = [

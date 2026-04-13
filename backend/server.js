@@ -49,6 +49,22 @@ app.get('/health', (_req, res) => {
   });
 });
 
+/* ───────────── DIAGNOSTICS ───────────── */
+app.get('/api/debug/db', async (_req, res) => {
+  try {
+    const status = mongoose.connection.readyState;
+    const states = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+    res.json({ 
+      state: states[status] || 'unknown',
+      dbConnected: status === 1,
+      hasUri: !!process.env.MONGO_URI,
+      nodeEnv: process.env.NODE_ENV
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 /* ───────────── ROUTES ───────────── */
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);

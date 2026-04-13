@@ -152,7 +152,7 @@ export const LoginPage: React.FC = () => {
               <input
                 type="email" value={email}
                 onChange={e => { setEmail(e.target.value); setError(''); setActiveDemoIdx(null); }}
-                placeholder="you@company.com"
+                placeholder="admin@gmail.com"
                 style={{
                   width: '100%', padding: '12px 16px',
                   background: 'rgba(255,255,255,0.04)',

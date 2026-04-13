@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
@@ -56,8 +58,21 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/logs', logRoutes);
 
-/* ───────────── 404 HANDLER ───────────── */
-app.use((req, res) => {
+/* ───────────── SERVE FRONTEND (STATIC) ───────────── */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static files from the React dist folder
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// Catch-all route to serve the React index.html for any unknown non-API route
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/')) return next();
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
+
+/* ───────────── 404 HANDLER (API ONLY) ───────────── */
+app.use('/api/*', (req, res) => {
   res.status(404).json({
     error: `Route ${req.method} ${req.path} not found`
   });

@@ -4,18 +4,18 @@ import { Zap, Mail, Lock, Shield, ChevronRight, Eye, EyeOff } from 'lucide-react
 import { useWorkflow } from '../../context/WorkflowContext';
 
 const DEMO_USERS = [
-  { label: 'Admin',      email: 'admin@gravityflow.com', password: 'admin123', color: '#6366f1' },
-  { label: 'HR Manager', email: 'hr@gravityflow.com',    password: 'hr1234',   color: '#10b981' },
-  { label: 'IT Manager', email: 'it@gravityflow.com',    password: 'it1234',   color: '#3b82f6' },
+  { label: 'Admin', email: 'admin@gmail.com', password: 'admin@qwe', color: '#6366f1' },
+  { label: 'HR Manager', email: 'hr@gmail.com', password: 'hr@qwe', color: '#10b981' },
+  { label: 'IT Manager', email: 'it@gmail.com', password: 'it@qwe', color: '#3b82f6' },
 ];
 
 export const LoginPage: React.FC = () => {
   const { login } = useWorkflow();
-  const [email,     setEmail]     = useState('');
-  const [password,  setPassword]  = useState('');
-  const [showPass,  setShowPass]  = useState(false);
-  const [loading,   setLoading]   = useState(false);
-  const [error,     setError]     = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [activeDemoIdx, setActiveDemoIdx] = useState<number | null>(null);
 
   const fillDemo = (i: number) => {

@@ -15,10 +15,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-/* ───────────── ROOT ───────────── */
-app.get("/", (req, res) => {
-  res.send("GravityFlow API is running 🚀");
-});
+// Root route removed to allow React frontend to serve '/' using static routing.
 
 /* ───────────── CORS ───────────── */
 const allowedOrigins = [

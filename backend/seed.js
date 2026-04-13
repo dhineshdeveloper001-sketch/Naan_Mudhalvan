@@ -17,9 +17,9 @@ async function seed() {
 
     // ── Users ──────────────────────────────────────────────────────────────
     const users = await User.create([
-      { name: 'Admin User',   email: 'admin@gravityflow.com', password: 'admin123', role: 'admin' },
-      { name: 'HR Manager',   email: 'hr@gravityflow.com',    password: 'hr1234',   role: 'hr'    },
-      { name: 'IT Manager',   email: 'it@gravityflow.com',    password: 'it1234',   role: 'it'    },
+      { name: 'Admin User', email: 'admin@gmail.com', password: 'admin@qwe', role: 'admin' },
+      { name: 'HR Manager', email: 'hr@gmail.com', password: 'hr@qwe', role: 'hr' },
+      { name: 'IT Manager', email: 'it@gmail.com', password: 'it@qwe', role: 'it' },
     ]);
     console.log('✅ Users seeded:', users.length);
 
@@ -39,20 +39,20 @@ async function seed() {
         name: 'Priya Patel', role: 'UX Designer',
         status: 'hired', department: 'Design', stage: 'onboarding',
         tasks: [
-          { title: 'Laptop Provisioning',  department: 'IT',         status: 'in-progress', assignee: 'IT Fleet' },
-          { title: 'Email Account Setup',  department: 'IT',         status: 'pending',     assignee: 'SysAdmin' },
-          { title: 'Access Badge Creation',department: 'Security',   status: 'pending',     assignee: 'Security Desk' },
-          { title: 'Desk Allocation',      department: 'Facilities', status: 'pending',     assignee: 'Ops Team' },
+          { title: 'Laptop Provisioning', department: 'IT', status: 'in-progress', assignee: 'IT Fleet' },
+          { title: 'Email Account Setup', department: 'IT', status: 'pending', assignee: 'SysAdmin' },
+          { title: 'Access Badge Creation', department: 'Security', status: 'pending', assignee: 'Security Desk' },
+          { title: 'Desk Allocation', department: 'Facilities', status: 'pending', assignee: 'Ops Team' },
         ],
       },
       {
         name: 'James Rivera', role: 'DevOps Engineer',
         status: 'hired', department: 'Engineering', stage: 'onboarding',
         tasks: [
-          { title: 'Laptop Provisioning',  department: 'IT',         status: 'pending', assignee: 'IT Fleet' },
-          { title: 'Email Account Setup',  department: 'IT',         status: 'pending', assignee: 'SysAdmin' },
-          { title: 'Access Badge Creation',department: 'Security',   status: 'pending', assignee: 'Security Desk' },
-          { title: 'Desk Allocation',      department: 'Facilities', status: 'pending', assignee: 'Ops Team' },
+          { title: 'Laptop Provisioning', department: 'IT', status: 'pending', assignee: 'IT Fleet' },
+          { title: 'Email Account Setup', department: 'IT', status: 'pending', assignee: 'SysAdmin' },
+          { title: 'Access Badge Creation', department: 'Security', status: 'pending', assignee: 'Security Desk' },
+          { title: 'Desk Allocation', department: 'Facilities', status: 'pending', assignee: 'Ops Team' },
         ],
       },
     ]);
@@ -60,20 +60,20 @@ async function seed() {
 
     // ── Logs ───────────────────────────────────────────────────────────────
     await Log.create([
-      { message: 'System database synchronized — Enterprise backbone online.',    type: 'success', triggeredBy: 'system' },
-      { message: `New Hire Detected: ${employees[2].name} (${employees[2].role})`,type: 'info',    triggeredBy: 'system' },
-      { message: `Onboarding Workflow Triggered for ${employees[2].displayId}`,   type: 'success', triggeredBy: 'system' },
-      { message: `New Hire Detected: ${employees[3].name} (${employees[3].role})`,type: 'info',    triggeredBy: 'system' },
-      { message: `Onboarding Workflow Triggered for ${employees[3].displayId}`,   type: 'success', triggeredBy: 'system' },
+      { message: 'System database synchronized — Enterprise backbone online.', type: 'success', triggeredBy: 'system' },
+      { message: `New Hire Detected: ${employees[2].name} (${employees[2].role})`, type: 'info', triggeredBy: 'system' },
+      { message: `Onboarding Workflow Triggered for ${employees[2].displayId}`, type: 'success', triggeredBy: 'system' },
+      { message: `New Hire Detected: ${employees[3].name} (${employees[3].role})`, type: 'info', triggeredBy: 'system' },
+      { message: `Onboarding Workflow Triggered for ${employees[3].displayId}`, type: 'success', triggeredBy: 'system' },
     ]);
     console.log('✅ Logs seeded');
 
     console.log('\n🎉 Seed complete!\n');
     console.log('   Demo credentials:');
     console.log('   ┌─────────────────────────────────────────────────────┐');
-    console.log('   │  admin@gravityflow.com  /  admin123   (Admin)       │');
-    console.log('   │  hr@gravityflow.com     /  hr1234     (HR Manager)  │');
-    console.log('   │  it@gravityflow.com     /  it1234     (IT Manager)  │');
+    console.log('   │  admin@gmail.com  /  admin@qwe   (Admin)       │');
+    console.log('   │  hr@gmail.com     /  hr@qwe     (HR Manager)  │');
+    console.log('   │  it@gmail.com     /  it@qwe     (IT Manager)  │');
     console.log('   └─────────────────────────────────────────────────────┘');
 
     process.exit(0);

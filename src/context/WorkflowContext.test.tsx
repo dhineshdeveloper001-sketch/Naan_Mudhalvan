@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { WorkflowProvider, useWorkflow } from './WorkflowContext';
-import React from 'react';
 
 // Mock data
 const mockEmployees = [
@@ -22,14 +21,14 @@ const mockLogs = [
 
 describe('Workflow Simulation Environment', () => {
   beforeEach(() => {
-    global.fetch = vi.fn().mockImplementation((url, options) => {
-      if (url.includes('/employees') && !options) {
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url, options) => {
+      if (typeof url === 'string' && url.includes('/employees') && !options) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([...mockEmployees]),
         });
       }
-      if (url.includes('/logs') && !options) {
+      if (typeof url === 'string' && url.includes('/logs') && !options) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([...mockLogs]),
@@ -46,7 +45,7 @@ describe('Workflow Simulation Environment', () => {
         return Promise.resolve({ ok: true });
       }
       return Promise.reject(new Error('Unknown URL'));
-    });
+    }));
   });
 
   afterEach(() => {

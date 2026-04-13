@@ -36,6 +36,7 @@ interface WorkflowContextType {
   triggerOnboarding: (name: string, role: string, department: string) => void;
   updateTaskStatus: (employeeId: string, taskId: string, status: TaskStatus) => void;
   addLog: (message: string, type: SystemLog['type']) => void;
+  deleteEmployee: (id: string) => void;
   runSimulation: () => void;
 }
 
@@ -76,21 +77,20 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const addLog = useCallback(async (message: string, type: SystemLog['type']) => {
     const newLog: SystemLog = { 
-      id: Date.now().toString(), 
+      id: `L_${Date.now()}`, 
       timestamp: new Date().toLocaleTimeString(), 
       message, 
       type 
     };
 
+    setLogs(prev => [newLog, ...prev].slice(0, 50));
+
     try {
-      const res = await fetch(`${API_BASE}/logs`, {
+      await fetch(`${API_BASE}/logs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newLog)
       });
-      if (res.ok) {
-        setLogs(prev => [newLog, ...prev].slice(0, 50));
-      }
     } catch (error) {
       console.error('Log sync failed:', error);
     }
@@ -159,6 +159,20 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   }, [employees, addLog]);
 
+  const deleteEmployee = useCallback(async (id: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/employees/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setEmployees(prev => prev.filter(emp => emp.id !== id));
+        addLog(`Employee Offboarded/Deleted: ${id}`, 'warning');
+      }
+    } catch (error) {
+      console.error('Delete failed:', error);
+    }
+  }, [addLog]);
+
   const runSimulation = useCallback(() => {
     addLog('Manual Simulation Triggered', 'warning');
     
@@ -195,6 +209,7 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
       setActiveView,
       triggerOnboarding,
       updateTaskStatus,
+      deleteEmployee,
       addLog,
       runSimulation
     }}>

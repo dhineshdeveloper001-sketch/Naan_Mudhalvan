@@ -4,14 +4,15 @@ import {
   MoreVertical, 
   UserPlus, 
   Briefcase,
-  Layers
+  Layers,
+  Trash2
 } from 'lucide-react';
 import { useWorkflow } from '../../context/WorkflowContext';
 
 import { NewHireModal } from '../common/NewHireModal';
 
 export const EmployeeList: React.FC = () => {
-  const { employees, triggerOnboarding } = useWorkflow();
+  const { employees, triggerOnboarding, deleteEmployee } = useWorkflow();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   return (
@@ -124,8 +125,36 @@ export const EmployeeList: React.FC = () => {
                    </div>
                 </td>
                 <td style={{ padding: '16px 24px' }}>
-                  <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', opacity: 0.6 }}>
-                    <button><MoreVertical size={18} /></button>
+                  <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                    <button 
+                      onClick={() => {
+                        if (confirm(`Are you sure you want to delete ${emp.name}?`)) {
+                          deleteEmployee(emp.id);
+                        }
+                      }}
+                      style={{ 
+                        color: 'var(--text-muted)', 
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '4px',
+                        borderRadius: '4px',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = 'var(--accent-danger)';
+                        e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = 'var(--text-muted)';
+                        e.currentTarget.style.background = 'transparent';
+                      }}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                    <button style={{ color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}>
+                      <MoreVertical size={16} />
+                    </button>
                   </div>
                 </td>
               </tr>

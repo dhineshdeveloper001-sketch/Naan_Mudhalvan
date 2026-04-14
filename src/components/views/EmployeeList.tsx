@@ -3,7 +3,9 @@ import { Users, UserPlus, Briefcase, Layers, Trash2, MoreVertical } from 'lucide
 import { useWorkflow } from '../../context/WorkflowContext';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { NewHireModal } from '../common/NewHireModal';
+import { EditEmployeeModal } from '../common/EditEmployeeModal';
 import { motion } from 'framer-motion';
+import { Edit2 } from 'lucide-react';
 
 const StageBadge: React.FC<{ stage: string }> = ({ stage }) => {
   const cfg = {
@@ -42,9 +44,13 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
 };
 
 export const EmployeeList: React.FC = () => {
-  const { employees, triggerOnboarding, deleteEmployee } = useWorkflow();
+  const { employees, triggerOnboarding, deleteEmployee, updateEmployee, can } = useWorkflow();
   const isMobile = useIsMobile();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [editingEmployee, setEditingEmployee] = React.useState<any | null>(null);
+
+  const canEdit = can('edit_profiles');
+  const canOnboard = can('trigger_lifecycle');
 
   const handleDelete = (id: string, name: string) => {
     if (window.confirm(`Offboard ${name}? This cannot be undone.`)) deleteEmployee(id);
@@ -59,22 +65,31 @@ export const EmployeeList: React.FC = () => {
         <div>
           <h2 style={{ fontSize: isMobile ? '20px' : '24px', fontWeight: '700' }}>Employee Directory</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '2px' }}>
-            {employees.length} employee{employees.length !== 1 ? 's' : ''} · Manage lifecycle and department allocations
+            {employees.length} employee{employees.length !== 1 ? 's' : ''} · {canEdit ? 'Complete Lifecycle Authority' : 'Read-only Directory View'}
           </p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          style={{
-            background: 'var(--accent-primary)', color: 'white',
-            padding: '10px 16px', borderRadius: '10px',
-            display: 'flex', alignItems: 'center', gap: '8px',
-            fontSize: '14px', fontWeight: '600', cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(99,102,241,0.3)', whiteSpace: 'nowrap', alignSelf: 'flex-start',
-          }}
-        >
-          <UserPlus size={16} /> Add Employee
-        </button>
+        {canOnboard && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            style={{
+              background: 'var(--accent-primary)', color: 'white',
+              padding: '10px 16px', borderRadius: '10px',
+              display: 'flex', alignItems: 'center', gap: '8px',
+              fontSize: '14px', fontWeight: '600', cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(99,102,241,0.3)', whiteSpace: 'nowrap', alignSelf: 'flex-start',
+            }}
+          >
+            <UserPlus size={16} /> Add Employee
+          </button>
+        )}
       </div>
+
+      <EditEmployeeModal 
+        isOpen={!!editingEmployee} 
+        onClose={() => setEditingEmployee(null)} 
+        employee={editingEmployee} 
+        onSubmit={updateEmployee} 
+      />
 
       {/* ── Desktop Table ── */}
       <div className="glass-panel mobile-table-hidden" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
@@ -126,16 +141,27 @@ export const EmployeeList: React.FC = () => {
                 </td>
                 <td style={{ padding: '14px 20px' }}>
                   <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                    <button onClick={() => handleDelete(emp.id, emp.name)}
-                      style={{ padding: '6px', borderRadius: '6px', color: 'var(--text-muted)', transition: 'all 0.2s' }}
-                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent-danger)'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                    <button style={{ padding: '6px', borderRadius: '6px', color: 'var(--text-muted)' }}>
-                      <MoreVertical size={15} />
-                    </button>
+                    {canEdit && (
+                      <>
+                        <button onClick={() => setEditingEmployee(emp)}
+                          style={{ padding: '6px', borderRadius: '6px', color: 'var(--text-muted)', transition: 'all 0.2s' }}
+                          onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent-primary)'; e.currentTarget.style.background = 'rgba(99,102,241,0.1)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
+                        >
+                          <Edit2 size={15} />
+                        </button>
+                        <button onClick={() => handleDelete(emp.id, emp.name)}
+                          style={{ padding: '6px', borderRadius: '6px', color: 'var(--text-muted)', transition: 'all 0.2s' }}
+                          onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent-danger)'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </>
+                    )}
+                    {!canEdit && (
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>View Only</span>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -175,10 +201,20 @@ export const EmployeeList: React.FC = () => {
                   <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{emp.role}</p>
                 </div>
               </div>
-              <button onClick={() => handleDelete(emp.id, emp.name)}
-                style={{ padding: '6px', borderRadius: '6px', color: 'var(--accent-danger)', background: 'rgba(239,68,68,0.08)' }}>
-                <Trash2 size={14} />
-              </button>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                {canEdit && (
+                  <>
+                    <button onClick={() => setEditingEmployee(emp)}
+                      style={{ padding: '6px', borderRadius: '6px', color: 'var(--accent-primary)', background: 'rgba(99,102,241,0.08)' }}>
+                      <Edit2 size={14} />
+                    </button>
+                    <button onClick={() => handleDelete(emp.id, emp.name)}
+                      style={{ padding: '6px', borderRadius: '6px', color: 'var(--accent-danger)', background: 'rgba(239,68,68,0.08)' }}>
+                      <Trash2 size={14} />
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>

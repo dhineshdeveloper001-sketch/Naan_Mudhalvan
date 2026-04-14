@@ -3,8 +3,9 @@ import {
   LayoutDashboard, GitBranch, CheckSquare, Settings, Bell,
   Search, Users, Activity, LogOut, ChevronRight, Menu, X, Zap
 } from 'lucide-react';
-import { useWorkflow } from '../../context/WorkflowContext';
+import { useWorkflow, PersonaType } from '../../context/WorkflowContext';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { PersonaSelector } from './PersonaSelector';
 
 const NAV_ITEMS = [
   { id: 'home',         name: 'Dashboard',           icon: LayoutDashboard },
@@ -25,7 +26,7 @@ const BOTTOM_NAV = [
 ];
 
 const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
-  const { activeView, setActiveView, currentUser, logout, isApiMode } = useWorkflow();
+  const { activeView, setActiveView, currentPersona } = useWorkflow();
   const isMobile = useIsMobile();
 
   const navigate = (id: string) => {
@@ -98,34 +99,19 @@ const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
         })}
       </nav>
 
-      {/* User + Logout */}
+      {/* Persona Status */}
       <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '16px', marginTop: '8px' }}>
-        {currentUser && (
-          <div style={{ padding: '10px 12px', marginBottom: '8px', borderRadius: 'var(--radius-md)', background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.12)' }}>
-            <p style={{ fontSize: '13px', fontWeight: '600' }}>{currentUser.name}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-              <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '10px', background: 'rgba(99,102,241,0.15)', color: 'var(--accent-primary)', fontWeight: '700', textTransform: 'uppercase' }}>
-                {currentUser.role}
-              </span>
-            </div>
-          </div>
-        )}
-        <button
-          onClick={isApiMode ? logout : undefined}
-          style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-muted)', fontSize: '14px', padding: '10px 12px', width: '100%', borderRadius: 'var(--radius-md)', transition: 'all 0.2s' }}
-          onMouseOver={e => { e.currentTarget.style.color = 'var(--accent-danger)'; e.currentTarget.style.background = 'rgba(239,68,68,0.06)'; }}
-          onMouseOut={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
-        >
-          <LogOut size={18} />
-          <span>{isApiMode ? 'Sign Out' : 'Local Mode'}</span>
-        </button>
+        <div style={{ padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.12)' }}>
+          <p style={{ fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px', letterSpacing: '0.05em' }}>CURRENT ROLE</p>
+          <p style={{ fontSize: '14px', fontWeight: '700' }}>{currentPersona}</p>
+        </div>
       </div>
     </aside>
   );
 };
 
 const TopBar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle }) => {
-  const { logs, currentUser } = useWorkflow();
+  const { logs, currentPersona } = useWorkflow();
   const isMobile = useIsMobile();
   const unreadCount = logs.filter(l => l.type === 'warning' || l.type === 'error').length;
 
@@ -164,29 +150,17 @@ const TopBar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle }) => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        {/* Notifications */}
-        <div style={{ position: 'relative', cursor: 'pointer' }}>
-          <Bell size={20} style={{ color: 'var(--text-secondary)' }} />
-          {unreadCount > 0 && (
-            <div style={{
-              position: 'absolute', top: '-4px', right: '-4px',
-              width: '16px', height: '16px', borderRadius: '50%',
-              background: 'var(--accent-danger)', fontSize: '9px', fontWeight: '700',
-              color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: '2px solid var(--bg-primary)',
-            }}>
-              {Math.min(unreadCount, 9)}
-            </div>
-          )}
-        </div>
+        {/* Persona Switcher */}
+        <PersonaSelector />
 
         <div style={{ width: '1px', height: '24px', background: 'var(--border-color)' }} />
 
+        {/* User Info */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {!isMobile && (
             <div style={{ textAlign: 'right' }}>
-              <p style={{ fontSize: '13px', fontWeight: '600' }}>{currentUser?.name || 'Admin User'}</p>
-              <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>{currentUser?.role || 'Enterprise Admin'}</p>
+              <p style={{ fontSize: '13px', fontWeight: '600' }}>Demo User</p>
+              <p style={{ fontSize: '10px', color: 'var(--text-muted)' }}>PERSISTENT MODE</p>
             </div>
           )}
           <div style={{
@@ -195,7 +169,7 @@ const TopBar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle }) => {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '14px', fontWeight: '700', color: 'white', flexShrink: 0,
           }}>
-            {(currentUser?.name || 'A')[0].toUpperCase()}
+            D
           </div>
         </div>
       </div>

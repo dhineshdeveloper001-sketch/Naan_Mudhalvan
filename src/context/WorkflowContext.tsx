@@ -32,8 +32,10 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
-  role: 'hr' | 'it' | 'admin';
+  role: PersonaType;
 }
+
+export type PersonaType = 'HR Admin' | 'IT Manager' | 'Security Officer' | 'Facilities Lead';
 
 interface WorkflowContextType {
   employees: Employee[];
@@ -42,15 +44,16 @@ interface WorkflowContextType {
   setActiveView: (view: string) => void;
   triggerOnboarding: (name: string, role: string, department: string) => void;
   updateTaskStatus: (employeeId: string, taskId: string, status: TaskStatus) => void;
+  updateEmployee: (id: string, updates: Partial<Employee>) => void;
   addLog: (message: string, type: SystemLog['type']) => void;
   deleteEmployee: (id: string) => void;
   runSimulation: () => void;
-  // Auth
-  currentUser: AuthUser | null;
+  // RBAC & Persona
+  currentPersona: PersonaType;
+  switchPersona: (persona: PersonaType) => void;
+  can: (permission: string) => boolean;
   isAuthenticated: boolean;
   isApiMode: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  logout: () => void;
 }
 
 // ─── API base URL ─────────────────────────────────────────────────────────────
@@ -110,7 +113,7 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [logs,      setLogs]      = useState<SystemLog[]>([]);
   const [activeView, setActiveView] = useState('home');
-  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const [currentPersona, setCurrentPersona] = useState<PersonaType>('HR Admin');
   const [loading, setLoading] = useState(true);
 
   // Use ref so callbacks always access the latest token without re-recreating
@@ -142,64 +145,62 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   // ── Mount: restore session ──────────────────────────────────────
   useEffect(() => {
+    // Direct Access Mode: Initialize from LS or defaults
+    const savedPersona = localStorage.getItem('gf_persona') as PersonaType;
+    if (savedPersona) setCurrentPersona(savedPersona);
+    
     if (!IS_API_MODE) {
       setEmployees(loadLS(LS_EMP, SEED_EMPLOYEES));
       setLogs(loadLS(LS_LOGS, SEED_LOGS));
       setLoading(false);
       return;
     }
-    const tok = localStorage.getItem(LS_TOK);
-    if (tok) {
-      try {
-        const payload = JSON.parse(atob(tok.split('.')[1]));
-        if (payload.exp * 1000 > Date.now()) {
-          tokenRef.current = tok;
-          setCurrentUser({ id: payload.id, name: payload.name, email: payload.email, role: payload.role });
-          fetchData(tok).finally(() => setLoading(false));
-          return;
-        }
-      } catch { /* bad token */ }
-      localStorage.removeItem(LS_TOK);
-    }
-    setLoading(false);
+    
+    // In API mode, we still allow direct access but fetch data
+    fetchData('demo_token').finally(() => setLoading(false));
   }, [fetchData]);
 
   // ── localStorage persistence (fallback mode) ────────────────────
   useEffect(() => { if (!IS_API_MODE) saveLS(LS_EMP, employees); }, [employees]);
   useEffect(() => { if (!IS_API_MODE) saveLS(LS_LOGS, logs); }, [logs]);
 
-  // ── Auth ────────────────────────────────────────────────────────
-  const login = useCallback(async (email: string, password: string) => {
-    if (!IS_API_MODE) return { success: true }; // no-op in localStorage mode
-    try {
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      if (res.ok) {
-        const { token, user } = await res.json();
-        tokenRef.current = token;
-        localStorage.setItem(LS_TOK, token);
-        setCurrentUser(user);
-        setLoading(true);
-        await fetchData(token);
-        setLoading(false);
-        return { success: true };
-      }
-      const { error } = await res.json();
-      return { success: false, error: error || 'Login failed' };
-    } catch {
-      return { success: false, error: 'Network error. Please try again.' };
-    }
-  }, [fetchData]);
+  // RBAC & Persona Switching
+  const switchPersona = useCallback((persona: PersonaType) => {
+    setCurrentPersona(persona);
+    localStorage.setItem('gf_persona', persona);
+    addLog(`Switched Identity: Now acting as ${persona}`, 'info');
+  }, [addLog]);
 
-  const logout = useCallback(() => {
-    tokenRef.current = null;
-    localStorage.removeItem(LS_TOK);
-    setCurrentUser(null);
-    setEmployees([]);
-    setLogs([]);
-  }, []);
+  const can = useCallback((permission: string): boolean => {
+    switch (currentPersona) {
+      case 'HR Admin':
+        return ['edit_profiles', 'view_all', 'trigger_lifecycle'].includes(permission);
+      case 'IT Manager':
+        return ['manage_it_tasks', 'view_devices', 'update_ad'].includes(permission);
+      case 'Security Officer':
+        return ['approve_badges', 'revoke_access', 'view_security_logs'].includes(permission);
+      case 'Facilities Lead':
+        return ['allocate_desks', 'manage_equipment', 'view_floor_plans'].includes(permission);
+      default:
+        return false;
+    }
+  }, [currentPersona]);
+
+  // Update Employee Logic (Fixing "Edit Profile")
+  const updateEmployee = useCallback(async (id: string, updates: Partial<Employee>) => {
+    setEmployees(prev => prev.map(emp => emp.id === id ? { ...emp, ...updates } : emp));
+    addLog(`Updated Employee Profile: ${id}`, 'success');
+    
+    if (IS_API_MODE && tokenRef.current) {
+      try {
+        await fetch(`${API_BASE}/api/employees/${id}`, {
+          method: 'PUT',
+          headers: apiHeaders(),
+          body: JSON.stringify(updates)
+        });
+      } catch (e) { console.error('API Update failed', e); }
+    }
+  }, [addLog]);
 
   // ── addLog ──────────────────────────────────────────────────────
   const addLog = useCallback(async (message: string, type: SystemLog['type']) => {
@@ -310,9 +311,10 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
   return (
     <WorkflowContext.Provider value={{
       employees, logs, activeView, setActiveView,
-      triggerOnboarding, updateTaskStatus, addLog, deleteEmployee, runSimulation,
-      currentUser, isAuthenticated: !!currentUser || !IS_API_MODE,
-      isApiMode: IS_API_MODE, login, logout,
+      triggerOnboarding, updateTaskStatus, updateEmployee, addLog, deleteEmployee, runSimulation,
+      currentPersona, switchPersona, can,
+      isAuthenticated: true,
+      isApiMode: IS_API_MODE,
     }}>
       {children}
     </WorkflowContext.Provider>

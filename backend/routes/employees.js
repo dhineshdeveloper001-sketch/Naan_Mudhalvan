@@ -1,8 +1,6 @@
 import express from 'express';
 import Employee from '../models/Employee.js';
 import Log from '../models/Log.js';
-import { authenticate } from '../middleware/auth.js';
-import { requireRole } from '../middleware/roles.js';
 
 const router = express.Router();
 
@@ -33,7 +31,7 @@ const log = async (message, type, employeeId = null, by = 'system') => {
 };
 
 // GET /api/employees
-router.get('/', authenticate, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const employees = await Employee.find().sort({ createdAt: -1 });
     res.json(employees);
@@ -41,7 +39,7 @@ router.get('/', authenticate, async (req, res) => {
 });
 
 // GET /api/employees/:id
-router.get('/:id', authenticate, async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
     if (!employee) return res.status(404).json({ error: 'Employee not found' });
@@ -50,7 +48,7 @@ router.get('/:id', authenticate, async (req, res) => {
 });
 
 // POST /api/employees — Create + trigger onboarding workflow
-router.post('/', authenticate, requireRole('hr', 'admin'), async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { name, role, department, status = 'hired' } = req.body;
     if (!name || !role || !department) {
@@ -70,7 +68,7 @@ router.post('/', authenticate, requireRole('hr', 'admin'), async (req, res) => {
 });
 
 // PUT /api/employees/:id — Update + trigger lifecycle automation
-router.put('/:id', authenticate, requireRole('hr', 'admin'), async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
     if (!employee) return res.status(404).json({ error: 'Employee not found' });
@@ -110,7 +108,7 @@ router.put('/:id', authenticate, requireRole('hr', 'admin'), async (req, res) =>
 });
 
 // PATCH /api/employees/:id/tasks/:taskId — Update task status
-router.patch('/:id/tasks/:taskId', authenticate, async (req, res) => {
+router.patch('/:id/tasks/:taskId', async (req, res) => {
   try {
     const { status } = req.body;
     if (!status) return res.status(400).json({ error: 'status is required' });
@@ -132,11 +130,11 @@ router.patch('/:id/tasks/:taskId', authenticate, async (req, res) => {
 });
 
 // DELETE /api/employees/:id
-router.delete('/:id', authenticate, requireRole('admin'), async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const employee = await Employee.findByIdAndDelete(req.params.id);
     if (!employee) return res.status(404).json({ error: 'Employee not found' });
-    await log(`Employee Record Deleted: ${employee.name} (${employee.displayId})`, 'warning', null, req.user.email);
+    await log(`Employee Record Deleted: ${employee.name} (${employee.displayId})`, 'warning', null, 'manual');
     res.json({ message: 'Employee deleted' });
   } catch { res.status(500).json({ error: 'Failed to delete employee' }); }
 });

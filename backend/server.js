@@ -5,7 +5,6 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
-import authRoutes from './routes/auth.js';
 import employeeRoutes from './routes/employees.js';
 import taskRoutes from './routes/tasks.js';
 import logRoutes from './routes/logs.js';
@@ -66,7 +65,6 @@ app.get('/api/debug/db', async (_req, res) => {
 });
 
 /* ───────────── ROUTES ───────────── */
-app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/logs', logRoutes);

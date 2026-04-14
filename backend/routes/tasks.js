@@ -1,11 +1,10 @@
 import express from 'express';
 import Employee from '../models/Employee.js';
-import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // GET /api/tasks — Aggregate all tasks across employees
-router.get('/', authenticate, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const { department, status } = req.query;
     const employees = await Employee.find();

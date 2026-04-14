@@ -28,13 +28,6 @@ export interface SystemLog {
   type: 'info' | 'success' | 'warning' | 'error';
 }
 
-export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
-  role: PersonaType;
-}
-
 export type PersonaType = 'HR Admin' | 'IT Manager' | 'Security Officer' | 'Facilities Lead';
 
 interface WorkflowContextType {
@@ -52,7 +45,6 @@ interface WorkflowContextType {
   currentPersona: PersonaType;
   switchPersona: (persona: PersonaType) => void;
   can: (permission: string) => boolean;
-  isAuthenticated: boolean;
   isApiMode: boolean;
 }
 
@@ -115,21 +107,11 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [currentPersona, setCurrentPersona] = useState<PersonaType>('HR Admin');
   const [loading, setLoading] = useState(true);
 
-  // Use ref so callbacks always access the latest token without re-recreating
-  const tokenRef = useRef<string | null>(null);
-
-  // ── Helpers ─────────────────────────────────────────────────────
-  const apiHeaders = () => ({
-    'Content-Type': 'application/json',
-    ...(tokenRef.current ? { Authorization: `Bearer ${tokenRef.current}` } : {}),
-  });
-
-  const fetchData = useCallback(async (tok: string) => {
+  const fetchData = useCallback(async () => {
     try {
-      const h = { Authorization: `Bearer ${tok}` };
       const [empR, logR] = await Promise.all([
-        fetch(`${API_BASE}/api/employees`, { headers: h }),
-        fetch(`${API_BASE}/api/logs?limit=100`, { headers: h }),
+        fetch(`${API_BASE}/api/employees`),
+        fetch(`${API_BASE}/api/logs?limit=100`),
       ]);
       if (empR.ok && logR.ok) {
         setEmployees((await empR.json()).map(normEmp));
@@ -156,7 +138,7 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
     
     // In API mode, we still allow direct access but fetch data
-    fetchData('demo_token').finally(() => setLoading(false));
+    fetchData().finally(() => setLoading(false));
   }, [fetchData]);
 
   // ── localStorage persistence (fallback mode) ────────────────────
@@ -167,8 +149,8 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
   const addLog = useCallback(async (message: string, type: SystemLog['type']) => {
     const localLog: SystemLog = { id: genId('L'), timestamp: new Date().toLocaleTimeString(), message, type };
     setLogs(prev => [localLog, ...prev].slice(0, 100));
-    if (IS_API_MODE && tokenRef.current) {
-      try { await fetch(`${API_BASE}/api/logs`, { method: 'POST', headers: apiHeaders(), body: JSON.stringify({ message, type }) }); }
+    if (IS_API_MODE) {
+      try { await fetch(`${API_BASE}/api/logs`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message, type }) }); }
       catch { /* silent */ }
     }
   }, []);
@@ -208,11 +190,11 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
     setEmployees(prev => prev.map(emp => emp.id === id ? { ...emp, ...updates } : emp));
     addLog(`Updated Employee Profile: ${id}`, 'success');
     
-    if (IS_API_MODE && tokenRef.current) {
+    if (IS_API_MODE) {
       try {
         await fetch(`${API_BASE}/api/employees/${id}`, {
           method: 'PUT',
-          headers: apiHeaders(),
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updates)
         });
       } catch (e) { console.error('API Update failed', e); }
@@ -223,17 +205,17 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   // ── triggerOnboarding ───────────────────────────────────────────
   const triggerOnboarding = useCallback(async (name: string, role: string, department: string) => {
-    if (IS_API_MODE && tokenRef.current) {
+    if (IS_API_MODE) {
       try {
         const res = await fetch(`${API_BASE}/api/employees`, {
-          method: 'POST', headers: apiHeaders(),
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, role, department, status: 'hired' }),
         });
         if (res.ok) {
           const saved = await res.json();
           setEmployees(prev => [normEmp(saved), ...prev]);
           // Refresh logs
-          const logRes = await fetch(`${API_BASE}/api/logs?limit=100`, { headers: apiHeaders() });
+          const logRes = await fetch(`${API_BASE}/api/logs?limit=100`);
           if (logRes.ok) setLogs((await logRes.json()).map(normLog));
           return;
         }
@@ -257,10 +239,10 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   // ── updateTaskStatus ────────────────────────────────────────────
   const updateTaskStatus = useCallback(async (employeeId: string, taskId: string, status: TaskStatus) => {
-    if (IS_API_MODE && tokenRef.current) {
+    if (IS_API_MODE) {
       try {
         const res = await fetch(`${API_BASE}/api/employees/${employeeId}/tasks/${taskId}`, {
-          method: 'PATCH', headers: apiHeaders(),
+          method: 'PATCH', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status }),
         });
         if (res.ok) {
@@ -281,10 +263,10 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   // ── deleteEmployee ──────────────────────────────────────────────
   const deleteEmployee = useCallback(async (id: string) => {
-    if (IS_API_MODE && tokenRef.current) {
+    if (IS_API_MODE) {
       try {
         const res = await fetch(`${API_BASE}/api/employees/${id}`, {
-          method: 'DELETE', headers: apiHeaders(),
+          method: 'DELETE'
         });
         if (res.ok) {
           setEmployees(prev => prev.filter(e => e.id !== id));
@@ -322,7 +304,6 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
       employees, logs, activeView, setActiveView,
       triggerOnboarding, updateTaskStatus, updateEmployee, addLog, deleteEmployee, runSimulation,
       currentPersona, switchPersona, can,
-      isAuthenticated: true,
       isApiMode: IS_API_MODE,
     }}>
       {children}

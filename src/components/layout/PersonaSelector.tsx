@@ -1,6 +1,8 @@
 import React from 'react';
 import { Shield, ChevronDown } from 'lucide-react';
-import { useWorkflow, PersonaType } from '../../context/WorkflowContext';
+import { Shield, ChevronDown } from 'lucide-react';
+import { useWorkflow } from '../../context/WorkflowContext';
+import type { PersonaType } from '../../context/WorkflowContext';
 
 export const PersonaSelector: React.FC = () => {
   const { currentPersona, switchPersona } = useWorkflow();

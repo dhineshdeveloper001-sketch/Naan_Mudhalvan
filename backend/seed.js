@@ -18,8 +18,8 @@ async function seed() {
     // ── Users ──────────────────────────────────────────────────────────────
     const users = await User.create([
       { name: 'Admin User', email: 'admin@gravityflow.com', password: 'admin123', role: 'admin' },
-      { name: 'HR Manager', email: 'hr@gravityflow.com', password: 'hr1234', role: 'hr' },
-      { name: 'IT Manager', email: 'it@gravityflow.com', password: 'it1234', role: 'it' },
+      { name: 'HR Manager', email: 'hr@gravityflow.com', password: 'hr123123', role: 'hr' },
+      { name: 'IT Manager', email: 'it@gravityflow.com', password: 'it123123', role: 'it' },
     ]);
     console.log('✅ Users seeded:', users.length);
 
@@ -72,8 +72,8 @@ async function seed() {
     console.log('   Demo credentials:');
     console.log('   ┌─────────────────────────────────────────────────────┐');
     console.log('   │  admin@gravityflow.com  /  admin123   (Admin)       │');
-    console.log('   │  hr@gravityflow.com     /  hr1234     (HR Manager)  │');
-    console.log('   │  it@gravityflow.com     /  it1234     (IT Manager)  │');
+    console.log('   │  hr@gravityflow.com     /  hr123123    (HR Manager)  │');
+    console.log('   │  it@gravityflow.com     /  it123123    (IT Manager)  │');
     console.log('   └─────────────────────────────────────────────────────┘');
 
     process.exit(0);

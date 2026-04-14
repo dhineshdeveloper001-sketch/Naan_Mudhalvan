@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Save, User, Briefcase, Layers } from 'lucide-react';
-import { Employee } from '../../context/WorkflowContext';
+import type { Employee } from '../../context/WorkflowContext';
 
 interface EditEmployeeModalProps {
   isOpen: boolean;

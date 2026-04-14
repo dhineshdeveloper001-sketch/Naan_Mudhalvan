@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useWorkflow } from '../../context/WorkflowContext';
 import type { PersonaType } from '../../context/WorkflowContext';
 

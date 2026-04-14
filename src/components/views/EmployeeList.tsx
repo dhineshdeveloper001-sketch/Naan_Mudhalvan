@@ -1,11 +1,10 @@
 import React from 'react';
-import { Users, UserPlus, Briefcase, Layers, Trash2, MoreVertical } from 'lucide-react';
+import { Users, UserPlus, Briefcase, Layers, Trash2, Edit2 } from 'lucide-react';
 import { useWorkflow } from '../../context/WorkflowContext';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { NewHireModal } from '../common/NewHireModal';
 import { EditEmployeeModal } from '../common/EditEmployeeModal';
 import { motion } from 'framer-motion';
-import { Edit2 } from 'lucide-react';
 
 const StageBadge: React.FC<{ stage: string }> = ({ stage }) => {
   const cfg = {

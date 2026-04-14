@@ -4,7 +4,6 @@ import {
   Search, Users, Activity, ChevronRight, Menu, X, Zap
 } from 'lucide-react';
 import { useWorkflow } from '../../context/WorkflowContext';
-import type { PersonaType } from '../../context/WorkflowContext';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { PersonaSelector } from './PersonaSelector';
 
@@ -112,9 +111,8 @@ const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
 };
 
 const TopBar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle }) => {
-  const { logs, currentPersona } = useWorkflow();
+  const { } = useWorkflow();
   const isMobile = useIsMobile();
-  const unreadCount = logs.filter(l => l.type === 'warning' || l.type === 'error').length;
 
   return (
     <header className="glass-panel" style={{

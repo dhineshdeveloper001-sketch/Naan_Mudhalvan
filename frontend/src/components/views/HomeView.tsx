@@ -42,8 +42,9 @@ export const HomeView: React.FC = () => {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', flexDirection: isMobile ? 'column' : 'row', gap: '12px' }}>
         <div>
-          <h1 style={{ fontSize: isMobile ? '22px' : '26px', fontWeight: '800', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: isMobile ? '22px' : '26px', fontWeight: '800', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '12px' }}>
             {currentPersona} Dashboard
+            <span style={{ fontSize: '10px', background: 'rgba(16,185,129,0.1)', color: 'var(--accent-success)', padding: '4px 8px', borderRadius: '6px', fontWeight: '700', letterSpacing: '0.05em' }}>SYSTEM LIVE</span>
           </h1>
           <p style={{ color: 'var(--text-secondary)', marginTop: '4px', fontSize: '14px' }}>
             {currentPersona === 'HR Admin' 

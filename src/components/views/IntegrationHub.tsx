@@ -25,9 +25,15 @@ const IntegrationCard: React.FC<{ name: string; status: IntStatus; icon: any; la
   </div>
 );
 
+import { AccessRestricted } from '../common/AccessRestricted';
+
 export const IntegrationHub: React.FC = () => {
-  const { logs, addLog } = useWorkflow();
+  const { logs, addLog, can } = useWorkflow();
   const isMobile = useIsMobile();
+
+  if (!can('view_integrations')) {
+    return <AccessRestricted requiredPermission="view_integrations" />;
+  }
 
   React.useEffect(() => {
     const handler = (e: Event) => {

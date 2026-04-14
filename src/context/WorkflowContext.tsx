@@ -181,18 +181,26 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [addLog]);
 
   const can = useCallback((permission: string): boolean => {
-    switch (currentPersona) {
-      case 'HR Admin':
-        return ['edit_profiles', 'view_all', 'trigger_lifecycle'].includes(permission);
-      case 'IT Manager':
-        return ['manage_it_tasks', 'view_devices', 'update_ad'].includes(permission);
-      case 'Security Officer':
-        return ['approve_badges', 'revoke_access', 'view_security_logs'].includes(permission);
-      case 'Facilities Lead':
-        return ['allocate_desks', 'manage_equipment', 'view_floor_plans'].includes(permission);
-      default:
-        return false;
-    }
+    const roles: Record<PersonaType, string[]> = {
+      'HR Admin': [
+        'view_home', 'view_visualizer', 'view_tasks', 'view_employees', 'view_integrations', 'view_admin',
+        'edit_profiles', 'view_all', 'trigger_lifecycle', 'manage_it_tasks', 'approve_badges', 'allocate_desks'
+      ],
+      'IT Manager': [
+        'view_home', 'view_visualizer', 'view_tasks', 'view_employees', 'view_integrations',
+        'manage_it_tasks', 'view_devices', 'update_ad'
+      ],
+      'Security Officer': [
+        'view_home', 'view_tasks', 'view_integrations',
+        'approve_badges', 'revoke_access', 'view_security_logs', 'manage_it_tasks'
+      ],
+      'Facilities Lead': [
+        'view_home', 'view_tasks',
+        'allocate_desks', 'manage_equipment', 'view_floor_plans'
+      ]
+    };
+
+    return (roles[currentPersona] || []).includes(permission);
   }, [currentPersona]);
 
   // Update Employee Logic (Fixing "Edit Profile")

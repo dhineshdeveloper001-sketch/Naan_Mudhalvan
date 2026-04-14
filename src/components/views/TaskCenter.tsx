@@ -29,7 +29,7 @@ const DEPT_CFG = {
 } as const;
 
 export const TaskCenter: React.FC = () => {
-  const { employees, updateTaskStatus, currentPersona } = useWorkflow();
+  const { employees, updateTaskStatus, currentPersona, can } = useWorkflow();
   const isMobile = useIsMobile();
   const [searchQuery,  setSearchQuery]  = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'pending'>('all');
@@ -38,6 +38,16 @@ export const TaskCenter: React.FC = () => {
     .flatMap(emp => emp.tasks.map(t => ({ ...t, employeeName: emp.name, employeeId: emp.id })))
     .filter(t => t.title.toLowerCase().includes(searchQuery.toLowerCase()) || t.employeeName.toLowerCase().includes(searchQuery.toLowerCase()))
     .filter(t => activeFilter === 'all' || t.status === 'pending');
+
+  const getDeptPermission = (dept: string) => {
+    switch (dept) {
+      case 'IT':         return 'manage_it_tasks';
+      case 'Security':   return 'approve_badges';
+      case 'Facilities': return 'allocate_desks';
+      case 'HR':         return 'trigger_lifecycle';
+      default:           return '';
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -76,13 +86,11 @@ export const TaskCenter: React.FC = () => {
         {(['IT', 'Security', 'Facilities', 'HR'] as const)
           .filter(dept => {
             if (currentPersona === 'HR Admin') return true;
-            if (currentPersona === 'IT Manager') return dept === 'IT' || dept === 'Facilities';
-            if (currentPersona === 'Security Officer') return dept === 'Security' || dept === 'IT';
-            if (currentPersona === 'Facilities Lead') return dept === 'Facilities' || dept === 'Security';
-            return true;
+            // Allow viewing if they can manage it OR if they can view all (HR Admin case handled above)
+            return can(getDeptPermission(dept));
           })
           .map(dept => {
-            const isTargetDept = (
+            const isTargetDept = can(getDeptPermission(dept)) && (
               (currentPersona === 'IT Manager' && dept === 'IT') ||
               (currentPersona === 'Security Officer' && dept === 'Security') ||
               (currentPersona === 'Facilities Lead' && dept === 'Facilities') ||

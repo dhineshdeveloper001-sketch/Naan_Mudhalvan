@@ -26,7 +26,7 @@ const BOTTOM_NAV = [
 ];
 
 const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
-  const { activeView, setActiveView, currentPersona } = useWorkflow();
+  const { activeView, setActiveView, currentPersona, can } = useWorkflow();
   const isMobile = useIsMobile();
 
   const navigate = (id: string) => {
@@ -69,7 +69,7 @@ const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
       {/* Nav */}
       <nav style={{ flex: 1 }}>
         <p style={{ fontSize: '10px', fontWeight: '600', color: 'var(--text-muted)', letterSpacing: '0.1em', padding: '0 12px', marginBottom: '8px' }}>NAVIGATION</p>
-        {NAV_ITEMS.map(item => {
+        {NAV_ITEMS.filter(item => can(`view_${item.id}`)).map(item => {
           const active = activeView === item.id;
           return (
             <button
@@ -178,10 +178,10 @@ const TopBar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle }) => {
 
 // ── Bottom Navigation (mobile) ─────────────────────────────────
 const BottomNav: React.FC = () => {
-  const { activeView, setActiveView } = useWorkflow();
+  const { activeView, setActiveView, can } = useWorkflow();
   return (
     <nav className="bottom-nav" style={{ alignItems: 'center', justifyContent: 'space-around' }}>
-      {BOTTOM_NAV.map(item => {
+      {BOTTOM_NAV.filter(item => can(`view_${item.id}`)).map(item => {
         const active = activeView === item.id;
         return (
           <button

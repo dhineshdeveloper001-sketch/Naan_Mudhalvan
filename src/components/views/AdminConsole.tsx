@@ -11,9 +11,15 @@ const ROLES = [
   { role: 'Facilities Lead',  permissions: ['Allocate Desks', 'Manage Equipment', 'View Floor Plans'],             color: 'var(--accent-warning)' },
 ];
 
+import { AccessRestricted } from '../common/AccessRestricted';
+
 export const AdminConsole: React.FC = () => {
-  const { employees, logs, addLog } = useWorkflow();
+  const { employees, logs, addLog, can } = useWorkflow();
   const isMobile = useIsMobile();
+
+  if (!can('view_admin')) {
+    return <AccessRestricted requiredPermission="view_admin" />;
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>

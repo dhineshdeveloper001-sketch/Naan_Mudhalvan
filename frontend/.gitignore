@@ -7,8 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-# dist (commented out to track frontend compiled files on github)
+dist
 dist-ssr
 *.local
 
@@ -22,3 +21,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.env
+.env.*

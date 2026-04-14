@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
-  LayoutDashboard, GitBranch, CheckSquare, Settings, Bell,
-  Search, Users, Activity, LogOut, ChevronRight, Menu, X, Zap
+  LayoutDashboard, GitBranch, CheckSquare, Settings,
+  Search, Users, Activity, ChevronRight, Menu, X, Zap
 } from 'lucide-react';
-import { useWorkflow, PersonaType } from '../../context/WorkflowContext';
+import { useWorkflow } from '../../context/WorkflowContext';
+import type { PersonaType } from '../../context/WorkflowContext';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { PersonaSelector } from './PersonaSelector';
 

@@ -30,7 +30,7 @@ const StatCard: React.FC<{
 );
 
 export const HomeView: React.FC = () => {
-  const { employees, triggerOnboarding, setActiveView } = useWorkflow();
+  const { employees, triggerOnboarding, setActiveView, currentPersona, can } = useWorkflow();
   const isMobile = useIsMobile();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [timeRange, setTimeRange] = React.useState('Last 30 Days');
@@ -42,25 +42,31 @@ export const HomeView: React.FC = () => {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', flexDirection: isMobile ? 'column' : 'row', gap: '12px' }}>
         <div>
-          <h1 style={{ fontSize: isMobile ? '22px' : '26px', fontWeight: '800', letterSpacing: '-0.02em' }}>Enterprise Overview</h1>
+          <h1 style={{ fontSize: isMobile ? '22px' : '26px', fontWeight: '800', letterSpacing: '-0.02em' }}>
+            {currentPersona} Dashboard
+          </h1>
           <p style={{ color: 'var(--text-secondary)', marginTop: '4px', fontSize: '14px' }}>
-            Welcome back — here's what's happening across your workflows.
+            {currentPersona === 'HR Admin' 
+              ? "Overseeing enterprise talent and lifecycle events." 
+              : `Operational control center for ${currentPersona}.`}
           </p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          style={{
-            background: 'var(--accent-primary)', color: 'white',
-            padding: isMobile ? '10px 16px' : '11px 18px',
-            borderRadius: 'var(--radius-md)',
-            display: 'flex', alignItems: 'center', gap: '8px',
-            fontWeight: '600', fontSize: '14px',
-            boxShadow: '0 4px 12px rgba(99,102,241,0.3)',
-            whiteSpace: 'nowrap', alignSelf: 'flex-start',
-          }}
-        >
-          <Plus size={16} /> New Hire
-        </button>
+        {can('trigger_lifecycle') && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            style={{
+              background: 'var(--accent-primary)', color: 'white',
+              padding: isMobile ? '10px 16px' : '11px 18px',
+              borderRadius: 'var(--radius-md)',
+              display: 'flex', alignItems: 'center', gap: '8px',
+              fontWeight: '600', fontSize: '14px',
+              boxShadow: '0 4px 12px rgba(99,102,241,0.3)',
+              whiteSpace: 'nowrap', alignSelf: 'flex-start',
+            }}
+          >
+            <Plus size={16} /> New Hire
+          </button>
+        )}
       </div>
 
       {/* Stat cards */}

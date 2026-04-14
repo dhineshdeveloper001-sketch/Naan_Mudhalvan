@@ -76,7 +76,6 @@ const SEED_LOGS: SystemLog[] = [
 // ─── localStorage helpers ─────────────────────────────────────────────────────
 const LS_EMP  = 'gf_employees';
 const LS_LOGS = 'gf_logs';
-const LS_TOK  = 'gf_token';
 
 const loadLS = <T,>(key: string, fallback: T): T => { try { const r = localStorage.getItem(key); return r ? JSON.parse(r) as T : fallback; } catch { return fallback; } };
 const saveLS = <T,>(key: string, v: T) => { try { localStorage.setItem(key, JSON.stringify(v)); } catch { /* noop */ } };
@@ -164,6 +163,16 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
   useEffect(() => { if (!IS_API_MODE) saveLS(LS_EMP, employees); }, [employees]);
   useEffect(() => { if (!IS_API_MODE) saveLS(LS_LOGS, logs); }, [logs]);
 
+  // ── addLog (Moved Up to Fix Hoisting) ──────────────────────
+  const addLog = useCallback(async (message: string, type: SystemLog['type']) => {
+    const localLog: SystemLog = { id: genId('L'), timestamp: new Date().toLocaleTimeString(), message, type };
+    setLogs(prev => [localLog, ...prev].slice(0, 100));
+    if (IS_API_MODE && tokenRef.current) {
+      try { await fetch(`${API_BASE}/api/logs`, { method: 'POST', headers: apiHeaders(), body: JSON.stringify({ message, type }) }); }
+      catch { /* silent */ }
+    }
+  }, []);
+
   // RBAC & Persona Switching
   const switchPersona = useCallback((persona: PersonaType) => {
     setCurrentPersona(persona);
@@ -202,15 +211,7 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   }, [addLog]);
 
-  // ── addLog ──────────────────────────────────────────────────────
-  const addLog = useCallback(async (message: string, type: SystemLog['type']) => {
-    const localLog: SystemLog = { id: genId('L'), timestamp: new Date().toLocaleTimeString(), message, type };
-    setLogs(prev => [localLog, ...prev].slice(0, 100));
-    if (IS_API_MODE && tokenRef.current) {
-      try { await fetch(`${API_BASE}/api/logs`, { method: 'POST', headers: apiHeaders(), body: JSON.stringify({ message, type }) }); }
-      catch { /* silent */ }
-    }
-  }, []);
+
 
   // ── triggerOnboarding ───────────────────────────────────────────
   const triggerOnboarding = useCallback(async (name: string, role: string, department: string) => {

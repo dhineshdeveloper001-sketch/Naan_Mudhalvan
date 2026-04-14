@@ -94,7 +94,6 @@ export const TaskCenter: React.FC = () => {
           const pending = deptTasks.filter(t => t.status === 'pending' || t.status === 'in-progress').length;
 
           return (
-          return (
             <div key={dept} className="glass-panel" style={{ 
               borderRadius: 'var(--radius-lg)', 
               display: 'flex', 

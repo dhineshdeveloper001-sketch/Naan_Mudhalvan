@@ -29,7 +29,7 @@ const DEPT_CFG = {
 } as const;
 
 export const TaskCenter: React.FC = () => {
-  const { employees, updateTaskStatus } = useWorkflow();
+  const { employees, updateTaskStatus, currentPersona } = useWorkflow();
   const isMobile = useIsMobile();
   const [searchQuery,  setSearchQuery]  = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'pending'>('all');
@@ -73,13 +73,34 @@ export const TaskCenter: React.FC = () => {
 
       {/* Columns */}
       <div className="grid-3">
-        {(['IT', 'Security', 'Facilities'] as const).map(dept => {
-          const cfg = DEPT_CFG[dept];
+        {(['IT', 'Security', 'Facilities', 'HR'] as const)
+          .filter(dept => {
+            if (currentPersona === 'HR Admin') return true;
+            if (currentPersona === 'IT Manager') return dept === 'IT' || dept === 'Facilities';
+            if (currentPersona === 'Security Officer') return dept === 'Security' || dept === 'IT';
+            if (currentPersona === 'Facilities Lead') return dept === 'Facilities' || dept === 'Security';
+            return true;
+          })
+          .map(dept => {
+            const isTargetDept = (
+              (currentPersona === 'IT Manager' && dept === 'IT') ||
+              (currentPersona === 'Security Officer' && dept === 'Security') ||
+              (currentPersona === 'Facilities Lead' && dept === 'Facilities') ||
+              (currentPersona === 'HR Admin' && dept === 'HR')
+            );
+            
+            const cfg = dept === 'HR' ? { icon: Monitor, color: 'var(--accent-primary)' } : DEPT_CFG[dept as keyof typeof DEPT_CFG];
           const deptTasks = allTasks.filter(t => t.department === dept);
           const pending = deptTasks.filter(t => t.status === 'pending' || t.status === 'in-progress').length;
 
           return (
-            <div key={dept} className="glass-panel" style={{ borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column' }}>
+            <div key={dept} className="glass-panel" style={{ 
+              borderRadius: 'var(--radius-lg)', 
+              display: 'flex', 
+              flexDirection: 'column',
+              border: isTargetDept ? '1px solid var(--accent-primary)' : '1px solid var(--border-color)',
+              background: isTargetDept ? 'rgba(99,102,241,0.03)' : 'transparent'
+            }}>
               <div style={{ padding: '18px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: `${cfg.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

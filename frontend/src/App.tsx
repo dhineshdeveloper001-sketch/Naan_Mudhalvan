@@ -6,16 +6,10 @@ import { TaskCenter } from './components/views/TaskCenter';
 import { EmployeeList } from './components/views/EmployeeList';
 import { IntegrationHub } from './components/views/IntegrationHub';
 import { AdminConsole } from './components/views/AdminConsole';
-import { LoginPage } from './components/views/LoginPage';
 import { WorkflowProvider, useWorkflow } from './context/WorkflowContext';
 
 const AppContent: React.FC = () => {
-  const { activeView, isAuthenticated, isApiMode } = useWorkflow();
-
-  // Show login page only in API mode when not authenticated
-  if (isApiMode && !isAuthenticated) {
-    return <LoginPage />;
-  }
+  const { activeView } = useWorkflow();
 
   const renderView = () => {
     switch (activeView) {
